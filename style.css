@@ -1,0 +1,140 @@
+:root {
+    --bg: #0b0b0d;
+    --card: #111114;
+    --border: rgba(255,255,255,0.08);
+    --text: #ffffff;
+    --muted: #9ca3af;
+    --neon: #e5e7eb;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Inter, system-ui, sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+}
+
+.background {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.04), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(255,255,255,0.03), transparent 40%);
+    animation: move 12s infinite alternate ease-in-out;
+}
+
+@keyframes move {
+    from { transform: scale(1); }
+    to { transform: scale(1.1); }
+}
+
+.center {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.logo {
+    font-size: 48px;
+    letter-spacing: 1px;
+}
+
+.subtitle {
+    color: var(--muted);
+    margin-bottom: 30px;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 0 40px rgba(255,255,255,0.03);
+    min-width: 320px;
+}
+
+.card.wide {
+    width: 420px;
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+input {
+    flex: 1;
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 10px;
+    color: white;
+    border-radius: 8px;
+}
+
+button, .btn {
+    background: white;
+    color: black;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn.outline {
+    background: transparent;
+    color: white;
+    border: 1px solid var(--border);
+}
+
+.result {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
+.avatar {
+    width: 96px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.stats div {
+    background: rgba(255,255,255,0.02);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.stats span {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.verified {
+    color: white;
+    margin-left: 6px;
+    text-shadow: 0 0 8px white;
+}
