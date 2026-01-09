@@ -8,41 +8,48 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function checkRoblox() {
-    const input = document.getElementById("username");
-    const username = input.value.trim();
+    const username = document.getElementById("username").value.trim();
+    const result = document.getElementById("result");
+
     if (!username) return;
 
-    const result = document.getElementById("result");
     result.classList.remove("hidden");
-    result.innerHTML = `<p class="loading">Loading public Roblox data…</p>`;
+    result.innerHTML = `<p class="loading">Fetching public Roblox data…</p>`;
 
     try {
-        // 1️⃣ Username → UserID
-        const userRes = await fetch("https://users.roblox.com/v1/usernames/users", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                usernames: [username],
-                excludeBannedUsers: false
-            })
-        });
+        // ===============================
+        // 1️⃣ Username → UserID (STABLE)
+        // ===============================
+        let userId;
 
-        const userJson = await userRes.json();
-        if (!userJson.data || !userJson.data.length) throw "USER_NOT_FOUND";
+        const legacyRes = await fetch(
+            `https://api.roblox.com/users/get-by-username?username=${encodeURIComponent(username)}`
+        );
+        const legacyData = await legacyRes.json();
 
-        const userId = userJson.data[0].id;
+        if (!legacyData || legacyData.success === false) {
+            throw "USER_NOT_FOUND";
+        }
 
+        userId = legacyData.Id;
+
+        // ===============================
         // 2️⃣ User Info
+        // ===============================
         const infoRes = await fetch(`https://users.roblox.com/v1/users/${userId}`);
         const info = await infoRes.json();
 
+        // ===============================
         // 3️⃣ Avatar
+        // ===============================
         const avatarRes = await fetch(
             `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=false`
         );
         const avatar = await avatarRes.json();
 
+        // ===============================
         // 4️⃣ Counts
+        // ===============================
         const [followersRes, friendsRes] = await Promise.all([
             fetch(`https://friends.roblox.com/v1/users/${userId}/followers/count`),
             fetch(`https://friends.roblox.com/v1/users/${userId}/friends/count`)
@@ -51,7 +58,9 @@ async function checkRoblox() {
         const followers = await followersRes.json();
         const friends = await friendsRes.json();
 
-        // 5️⃣ Account Age exakt
+        // ===============================
+        // 5️⃣ Account Age (EXAKT)
+        // ===============================
         const created = new Date(info.created);
         const now = new Date();
 
@@ -68,7 +77,9 @@ async function checkRoblox() {
             months += 12;
         }
 
-        // UI Render
+        // ===============================
+        // UI RENDER
+        // ===============================
         result.innerHTML = `
             <img class="avatar" src="${avatar.data[0].imageUrl}">
             <h3>
@@ -102,15 +113,15 @@ async function checkRoblox() {
             </a>
         `;
 
-        // URL sync
         history.replaceState(null, "", `?username=${encodeURIComponent(username)}`);
 
-    } catch (err) {
-        console.error(err);
+    } catch (e) {
+        console.error(e);
         result.innerHTML = `
             <p class="error">
-                Public Roblox data not found.
+                Roblox user not found or public data unavailable.
             </p>
         `;
     }
 }
+
