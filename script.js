@@ -6,42 +6,28 @@ window.checkRoblox = async function () {
     const input = document.getElementById("username");
     const result = document.getElementById("result");
 
-    if (!input || !result) {
-        console.error("Missing elements");
-        return;
-    }
-
     const username = input.value.trim();
-    if (!username) {
-        result.classList.remove("hidden");
-        result.innerHTML = "<p class='error'>Enter a username</p>";
-        return;
-    }
+    if (!username) return;
 
     result.classList.remove("hidden");
-    result.innerHTML = "<p class='loading'>Loading Roblox public data…</p>";
+    result.innerHTML = "<p class='loading'>Loading public Roblox data…</p>";
 
     try {
-        // 1️⃣ Username → UserId (OFFICIAL API)
-        const userRes = await fetch("https://users.roblox.com/v1/usernames/users", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                usernames: [username],
-                excludeBannedUsers: false
-            })
-        });
-
+        // 1️⃣ Username → UserId (LEGACY, CORS OPEN)
+        const userRes = await fetch(
+            `https://api.roblox.com/users/get-by-username?username=${encodeURIComponent(username)}`
+        );
         const userData = await userRes.json();
-        if (!userData.data || !userData.data.length) {
+
+        if (!userData || userData.success === false || !userData.Id) {
             throw new Error("User not found");
         }
 
-        const user = userData.data[0];
-        const userId = user.id;
+        const userId = userData.Id;
 
         // 2️⃣ User info
-        const info = await fetch(`https://users.roblox.com/v1/users/${userId}`).then(r => r.json());
+        const info = await fetch(`https://users.roblox.com/v1/users/${userId}`)
+            .then(r => r.json());
 
         // 3️⃣ Avatar
         const avatar = await fetch(
@@ -59,8 +45,7 @@ window.checkRoblox = async function () {
 
         // 5️⃣ Account age
         const created = new Date(info.created);
-        const now = new Date();
-        const ageDays = Math.floor((now - created) / 86400000);
+        const days = Math.floor((Date.now() - created) / 86400000);
 
         result.innerHTML = `
             <img class="avatar" src="${avatar.data[0].imageUrl}">
@@ -71,7 +56,7 @@ window.checkRoblox = async function () {
 
             <div class="stats">
                 <div><span>Created</span><b>${created.toLocaleDateString()}</b></div>
-                <div><span>Account Age</span><b>${ageDays} days</b></div>
+                <div><span>Account Age</span><b>${days} days</b></div>
                 <div><span>Followers</span><b>${followers.count}</b></div>
                 <div><span>Friends</span><b>${friends.count}</b></div>
             </div>
