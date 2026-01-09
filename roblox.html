@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Roblox Age Checker – SocialChecker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="background"></div>
+
+<div class="center">
+    <div class="card wide">
+
+        <h2>Roblox Account Checker</h2>
+
+        <div class="input-group">
+            <input type="text" id="username" placeholder="Roblox Username">
+            <button onclick="checkRoblox()">Check</button>
+        </div>
+
+        <div id="result" class="result hidden">
+            <img id="avatar" class="avatar" src="">
+            <h3>
+                <span id="name"></span>
+                <span id="verified" class="verified hidden">✔</span>
+            </h3>
+
+            <div class="stats">
+                <div><span>Created</span><b id="created"></b></div>
+                <div><span>Account Age</span><b id="age"></b></div>
+                <div><span>Followers</span><b id="followers"></b></div>
+                <div><span>Friends</span><b id="friends"></b></div>
+            </div>
+
+            <a id="profile" target="_blank" class="btn outline">Open Roblox Profile</a>
+        </div>
+
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
